@@ -1,0 +1,27 @@
+name: Upload Release Assets
+
+on:
+  push:
+    branches:
+      - main # Change to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies and build
+        run: |
+          wget https://github.com/unikraft/dynamic-apps/tree/master/extract.sh
+          bash ./extract.sh ./imaginary
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            /*
+          token: ${{ secrets.GITHUB_TOKEN }}
