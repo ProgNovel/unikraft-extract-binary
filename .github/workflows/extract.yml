@@ -15,7 +15,7 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          sudo apt-get update && apt-get install --no-install-recommends -y \
+          sudo apt-get update && sudo apt-get install --no-install-recommends -y \
             libvps curl wget procps libglib2.0-0 libjpeg62-turbo libpng16-16 libopenexr25 \
             libwebp6 libwebpmux3 libwebpdemux2 libtiff5 libgif7 libexif12 libxml2 libpoppler-glib8 \
             libmagickwand-6.q16-6 libpango1.0-0 libmatio11 libopenslide0 libjemalloc2 \
