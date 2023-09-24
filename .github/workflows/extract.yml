@@ -16,6 +16,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           wget https://github.com/unikraft/dynamic-apps/tree/master/extract.sh
+          ldd ./imaginary
           bash ./extract.sh ./imaginary
 
       - name: Create GitHub Release
