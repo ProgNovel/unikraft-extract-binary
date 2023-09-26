@@ -26,14 +26,7 @@ jobs:
       - name: Copy files to a new package folder
         run: |
           mkdir ./package  # Create the 'package' folder if it doesn't exist
-
-          cp -r \
-            ## files to copy
-            /lib/x86_64-linux-gnu/**/* \
-            /lib64/ld-linux-x86-64.so.2 \
-            ./imaginary \
-            ## output package folder
-            ./package/
+          cp -r /lib/x86_64-linux-gnu/**/* /lib64/ld-linux-x86-64.so.2 ./imaginary ./package/
 
       - name: Package with Kraftkit
         run: |
