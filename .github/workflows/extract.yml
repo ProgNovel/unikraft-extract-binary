@@ -36,7 +36,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            /usr/**/*
+            /lib/x86_64-linux-gnu/**/*
+            /lib64/ld-linux-x86-64.so.2
             /imaginary
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: 1.0.0
