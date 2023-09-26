@@ -35,7 +35,7 @@ jobs:
 
       - name: Install KraftKit
         run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://get.kraftkit.sh | sh -y
+          curl --proto '=https' --tlsv1.2 -sSf https://get.kraftkit.sh | sh
 
       - name: Package with Kraftkit
         run: |
