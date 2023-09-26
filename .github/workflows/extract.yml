@@ -28,11 +28,17 @@ jobs:
           mkdir ./package  # Create the 'package' folder if it doesn't exist
           cp -r /lib/x86_64-linux-gnu /lib64/ld-linux-x86-64.so.2 ./imaginary ./package/
 
-      - name: Package with Kraftkit
+      - name: Git clone ELF loader
         run: |
           test ! -d app-elfloader && git clone https://github.com/unikraft/app-elfloader
           cd app-elfloader
+
+      - name: Install KraftKit
+        run: |
           curl --proto '=https' --tlsv1.2 -sSf https://get.kraftkit.sh | sh
+
+      - name: Package with Kraftkit
+        run: |
           kraft build --kraftfile kraft.cloud.yaml --no-cache
           kraft pkg --kraftfile kraft.cloud.yaml --as oci --name index.unikraft.io/$UKP_API_USER/$UKP_APP_NAME:latest --initrd ../package
           kraft login --token $UKP_API_TOKEN index.unikraft.io
