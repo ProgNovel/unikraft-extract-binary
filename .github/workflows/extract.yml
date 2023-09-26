@@ -23,6 +23,7 @@ jobs:
           sudo apt install libvips
           wget https://github.com/unikraft/dynamic-apps/tree/master/extract.sh
           ldd ./imaginary
+          file ./imaginary
           bash ./extract.sh ./imaginary
           find ~
 
