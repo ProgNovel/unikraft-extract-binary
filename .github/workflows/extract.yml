@@ -14,31 +14,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Git tag
-      #   run: git tag 1.0.0
-
-      - name: Install dependencies and build
+      - name: Install dependencies and extract
         run: |
-          # sudo apt update && sudo apt install -y \
-          #   libvps curl wget procps libglib2.0-0 libjpeg62-turbo libpng16-16 libopenexr25 \
-          #   libwebp6 libwebpmux3 libwebpdemux2 libtiff5 libgif7 libexif12 libxml2 libpoppler-glib8 \
-          #   libmagickwand-6.q16-6 libpango1.0-0 libmatio11 libopenslide0 libjemalloc2 \
-          #   libgsf-1-114 fftw3 liborc-0.4-0 librsvg2-2 libcfitsio9 libimagequant0 libheif1
           sudo apt install libvips
           wget https://raw.githubusercontent.com/unikraft/dynamic-apps/master/extract.sh
           ldd ./imaginary
           file ./imaginary
           bash ./extract.sh ./imaginary
           echo "Extracting ELF binary completed."
-          ls
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            /lib/x86_64-linux-gnu/**/*
-            /lib64/ld-linux-x86-64.so.2
-            ./imaginary
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: 1.0.0
+      - name: Copy files to a new package folder
+        run: |
+          mkdir ./package  # Create the 'package' folder if it doesn't exist
+
+          cp -r \
+            ## files to copy
+            /lib/x86_64-linux-gnu/**/* \
+            /lib64/ld-linux-x86-64.so.2 \
+            ./imaginary \
+            ## output package folder
+            ./package/
+
+      - name: Package with Kraftkit
+        run: |
+          test ! -d app-elfloader && git clone https://github.com/unikraft/app-elfloader
+          cd app-elfloader
+          curl --proto '=https' --tlsv1.2 -sSf https://get.kraftkit.sh | sh
+          kraft build --kraftfile kraft.cloud.yaml --no-cache
+          kraft pkg --kraftfile kraft.cloud.yaml --as oci --name index.unikraft.io/$UKP_API_USER/$UKP_APP_NAME:latest --initrd ../package
+          kraft login --token $UKP_API_TOKEN index.unikraft.io
+          kraft pkg push --kraftfile kraft.cloud.yaml --as oci index.unikraft.io/$UKP_API_USER/$UKP_APP_NAME:latest
+        env:
+          UKP_API_TOKEN: ${{ secrets.UKP_API_TOKEN }}
+          UKP_APP_NAME: ${{ env.UKP_APP_NAME }}
+          UKP_APP_USER: ${{ env.UKP_APP_USER }}
