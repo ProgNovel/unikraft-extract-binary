@@ -18,15 +18,15 @@ jobs:
         run: |
           sudo apt install libvips
           wget https://raw.githubusercontent.com/unikraft/dynamic-apps/master/extract.sh
-          ldd ./imaginary
-          file ./imaginary
-          bash ./extract.sh ./imaginary
+          ldd ./my-program
+          file ./my-program
+          bash ./extract.sh ./my-program
           echo "Extracting ELF binary completed."
 
       - name: Copy files to a new package folder
         run: |
           mkdir ./package  # Create the 'package' folder if it doesn't exist
-          cp -r /lib/x86_64-linux-gnu /lib64/ld-linux-x86-64.so.2 ./imaginary ./package/
+          cp -r /lib/x86_64-linux-gnu /lib64/ld-linux-x86-64.so.2 ./my-program ./package/
 
       - name: Git clone ELF loader
         run: |
@@ -35,7 +35,7 @@ jobs:
 
       - name: Install KraftKit
         run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://get.kraftkit.sh | sh
+          curl --proto '=https' --tlsv1.2 -sSf https://get.kraftkit.sh | sh -y
 
       - name: Package with Kraftkit
         run: |
